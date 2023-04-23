@@ -1,3 +1,5 @@
+const { POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD } = require('./const');
+
 /**
  * Standard format for hardware and firmware version strings 
  * @param {*} major integer
@@ -37,7 +39,7 @@ function blockAwaitServerOk(device, cb, numRetries) {
             } else {
                 count = count + 1;
                 console.log("Failed to connect. Retrying...");
-                setTimeout(_checkServerStatus, POLIP_AWAIT_SERVER_OK_DELAY);
+                setTimeout(_checkServerStatus, POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD);
             }
         };
 

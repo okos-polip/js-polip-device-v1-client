@@ -15,18 +15,6 @@ const POLIP_DEFAULT_PUSH_SENSE_PERIOD = 1000;
 //! Periodic check of server okay on initialization
 const POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD = 500;
 
-// Errors generated during polip function operation (comprehensive)
-// Not all routines will generate all errors.
-class PolipError {
-    static OK = 0;
-    static ERROR_TAG_MISMATCH = 1;
-    static ERROR_VALUE_MISMATCH = 2;
-    static ERROR_RESPONSE_DESERIALIZATION = 3;
-    static ERROR_SERVER_ERROR = 4;
-    static ERROR_LIB_REQUEST = 5;
-    static ERROR_WORKFLOW = 6;
-};
-
 module.exports = {
     POLIP_DEVICE_INGEST_SERVER_ADDRESS,
     POLIP_DEVICE_INGEST_SERVER_HTTP_PORT,
@@ -35,6 +23,5 @@ module.exports = {
     POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
     POLIP_DEFAULT_POLL_STATE_PERIOD,
     POLIP_DEFAULT_PUSH_SENSE_PERIOD,
-    POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD,
-    PolipError
+    POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD
 };
