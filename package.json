@@ -1,0 +1,23 @@
+{
+  "name": "js-polip-device-v1-client",
+  "version": "0.0.1",
+  "description": "Client library for device ingest server",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/okos-polip/js-device-v1-client"
+  },
+  "author": "Curt Henrichs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/okos-polip/js-device-v1-client/issues"
+  },
+  "homepage": "https://github.com/okos-polip/js-device-v1-client#readme",
+  "dependencies": {
+    "axios": "^1.3.5",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^8.3.2"
+  }
+}
