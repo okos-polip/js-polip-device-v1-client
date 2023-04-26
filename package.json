@@ -3,7 +3,13 @@
   "version": "0.0.1",
   "description": "Client library for device ingest server",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "bundle": "browserify src/index.js -o dist/bundle.js -i axios",
+    "minify": "terser dist/bundle.js -o dist/bundle.min.js",
+    "build-win": "powershell -ExecutionPolicy Bypass -File build.ps1 polip-ingest-v1.min.js",
+    "build-unix": "npm run bundle && npm run minify && cp dist/bundle.min.js polip-ingest-v1.min.js",
+    "build": "node build.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/okos-polip/js-device-v1-client"
@@ -19,5 +25,9 @@
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "terser": "^5.17.1"
   }
 }

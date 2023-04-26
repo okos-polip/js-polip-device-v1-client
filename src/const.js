@@ -1,4 +1,4 @@
-//! Fixed device ingest server URL 
+// Fixed device ingest server URL 
 const POLIP_DEVICE_INGEST_SERVER_ADDRESS = "api.okospolip.com";
 const POLIP_DEVICE_INGEST_SERVER_HTTP_PORT = 3021;
 const POLIP_DEVICE_INGEST_SERVER_HTTPS_PORT = 3022;
@@ -6,13 +6,13 @@ const POLIP_DEVICE_INGEST_SERVER_HTTPS_PORT = 3022;
 const POLIP_DEVICE_INGEST_SERVER_URL = `http://${POLIP_DEVICE_INGEST_SERVER_ADDRESS}:${POLIP_DEVICE_INGEST_SERVER_HTTP_PORT}`;
 const POLIP_DEVICE_INGEST_SERVER_URL_SECURE = `https://${POLIP_DEVICE_INGEST_SERVER_ADDRESS}:${POLIP_DEVICE_INGEST_SERVER_HTTPS_PORT}`;
 
-//! Periodic poll of server device state
+// Periodic poll of server device state
 const POLIP_DEFAULT_POLL_STATE_PERIOD = 1000;
 
-//! Periodic push of device sensors
+// Periodic push of device sensors
 const POLIP_DEFAULT_PUSH_SENSE_PERIOD = 1000;
 
-//! Periodic check of server okay on initialization
+// Periodic check of server okay on initialization
 const POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD = 500;
 
 module.exports = {
