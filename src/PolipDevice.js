@@ -277,7 +277,7 @@ class PolipDevice {
         console.log(res);
 
         return res;
-    }
+    } //NOTE: we should use the getSchema() method to drive UI composition?
 
     /**
      * POST Requests error semantic description and range
