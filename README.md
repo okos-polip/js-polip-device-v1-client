@@ -374,7 +374,7 @@ Response = JSON
     "hardware": "v0.0.0",
     "firmware": "v0.0.0",
     "value": 1,
-    "tag": "1f6c640f7d072b6c5dc26e55e320f78d7df1b012ae9b31f3c3e1da2da39c6d77"
+    "tag": "0"
 }
 ```
 
