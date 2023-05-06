@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { getVerboseDebug } = require('./verbose');
 const { createTimestamp, createTag } = require('./util');
 const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE } = require('./const');
 
@@ -9,23 +10,23 @@ const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE } = require('./const');
  */
 class PolipDevice {
     constructor(
-        url = POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
-        value = 0, 
-        skipTagCheck = false, 
         serial = null, 
         key = null,
         hardware = null, 
         firmware = null,
-        rollover = null
+        rollover = null,
+        url = POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
+        value = 0, 
+        skipTagCheck = false, 
     ) {
-        this.url = url;                     // Ingest URL (by default set to secure fixed api name)
-        this.value = value;                 // Incremented value for next transmission id
-        this.skipTagCheck = skipTagCheck;   // Set true if key -> tag gen not needed
         this.serial = serial;               // Serial identifier unique to this device
         this.key = key;                     // Revocable key used for tag gen
         this.hardware = hardware;           // Hardware version to report to server
         this.firmware = firmware;           // Firmware version to report to server
         this.rollover = rollover;           // Defines integer rollover (for fixed width devices)
+        this.url = url;                     // Ingest URL (by default set to secure fixed api name)
+        this.value = value;                 // Incremented value for next transmission id
+        this.skipTagCheck = skipTagCheck;   // Set true if key -> tag gen not needed
     }
 
     /**
@@ -69,11 +70,11 @@ class PolipDevice {
     async getState(state = true, meta = false, sensors = false, rpc = false, manufacturer = false) {
 
         const params = new URLSearchParams({
-            meta: meta,
-            state: state,
-            sensors: sensors,
-            rpc: rpc,
-            manufacturer: manufacturer
+            meta: !!meta,
+            state: !!state,
+            sensors: !!sensors,
+            rpc: !!rpc,
+            manufacturer: !!manufacturer
         }).toString();
 
         const res = await this._requestTemplate(
@@ -81,9 +82,20 @@ class PolipDevice {
             {}
         );
 
-        console.log(res);
-
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
+        
         return res;
+    }
+
+    /**
+     * Wrapper on getState for passing in a single params object instead of listing parameters
+     * @param {state, meta, sensors, rpc, manufacturer} params key:value
+     * @returns result of device.getState()
+     */
+    async getStateByParam({ state, meta, sensors, rpc, manufacturer }) {
+        return this.getState(state, meta, sensors, rpc, manufacturer);
     }
 
     /**
@@ -114,7 +126,9 @@ class PolipDevice {
             { state: stateObj }
         );
 
-        console.log(res);
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
 
         return res;
     }
@@ -124,7 +138,7 @@ class PolipDevice {
      * @param {*} message string message to be provided with error - should be human readable
      */
     async pushNotification(message) {
-        this.pushError(message, 0);
+        return this.pushError(message, 0);
     }
 
     /**
@@ -155,7 +169,9 @@ class PolipDevice {
             { code: errorCode, message: message }
         );
 
-        console.log(res)
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
 
         return res;
     }
@@ -183,10 +199,14 @@ class PolipDevice {
             throw new Error('Invalid parameterization: sensor object must be provided');
         }
     
-        const res = await _requestTemplate(
+        const res = await this._requestTemplate(
             this.url + "/api/v1/device/sense",
             { sense: sensorsObj }
         );
+
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
     
         return res;
     }
@@ -204,7 +224,7 @@ class PolipDevice {
      * @returns fully formed response JSON data - acknowledgement
      */
     async getValue() {
-        const res = await _requestTemplate(
+        const res = await this._requestTemplate(
             this.url + "/api/v1/device/value",
             {}, 
             true, // skip value in request pack 
@@ -213,7 +233,9 @@ class PolipDevice {
     
         this.value = res.value;
 
-        console.log(res);
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
         
         return res;
     }
@@ -243,12 +265,14 @@ class PolipDevice {
             throw new Error('Invalid parameterization: RPC must have result');
         }
 
-        const res = await _requestTemplate( 
+        const res = await this._requestTemplate( 
             this.url + "/api/v1/device/rpc",
             { rpc: rpcObj }
         );
 
-        console.log(res);
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
 
         return res;
     }
@@ -274,7 +298,9 @@ class PolipDevice {
             {}
         );
 
-        console.log(res);
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
 
         return res;
     } //NOTE: we should use the getSchema() method to drive UI composition?
@@ -306,7 +332,9 @@ class PolipDevice {
             {}
         );
 
-        console.log(res);
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
 
         return res;
     }
@@ -350,6 +378,10 @@ class PolipDevice {
 
         if (response.status !== 200) {
             if (response.data === 'value invalid') {
+                if (getVerboseDebug()) {
+                    console.log(`Value invalid error detected - recommending to call device.getValue()`);
+                }
+
                 throw new Error('Value invalid');
             } else {
                 throw new Error('Server error');
@@ -361,6 +393,9 @@ class PolipDevice {
             response.data.tag = '0';
             response.data.tag = await createTag(JSON.stringify(response.data), this.key);
             if (oldTag !== response.data.tag) {
+                if (getVerboseDebug()) {
+                    console.log(`Tag match error detected: Old = ${oldTag}, New = ${response.data.tag }`);
+                }
                 throw new Error('Tag match failed');
             }
         }

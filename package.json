@@ -8,7 +8,8 @@
     "minify": "terser dist/bundle.js -o dist/bundle.min.js",
     "build-win": "powershell -ExecutionPolicy Bypass -File build.ps1 polip-ingest-v1.min.js",
     "build-unix": "npm run bundle && npm run minify && cp dist/bundle.min.js polip-ingest-v1.min.js",
-    "build": "node build.js"
+    "build": "node build.js",
+    "example": "node example/basicComms.js"
   },
   "repository": {
     "type": "git",

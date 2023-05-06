@@ -1,4 +1,9 @@
+const { getVerboseDebug } = require('./verbose');
 const { POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD } = require('./const');
+
+if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+    var crypto = require('crypto').webcrypto;
+}
 
 /**
  * Standard format for hardware and firmware version strings 
@@ -11,7 +16,14 @@ function formatVersion(major, minor, patch) {
     major = parseInt(major);
     minor = parseInt(minor);
     patch = parseInt(patch);
-    return `v${major}.${minor}.${patch}`;
+    
+    string = `v${major}.${minor}.${patch}`;
+
+    if (getVerboseDebug()) {
+        console.log(`Formatting Version: ${string}`);
+    }
+
+    return string;
 }
 
 /**
@@ -23,22 +35,47 @@ function formatVersion(major, minor, patch) {
  */
 function blockAwaitServerOk(device, cb, numRetries) {
     return new Promise((resolve, reject) => {
-        console.log("Connecting to Okos Polip Device Ingest Service");
+        if (getVerboseDebug()) {
+            console.log("Connecting to Okos Polip Device Ingest Service");
+        }
 
         let count = 0;
 
         const _checkServerStatus = async () => {
-            if (POLIP_OK === await device.checkServerStatus()) {
-                console.log("Connected");
+            let status;
+
+            try {
+                status = await device.checkServerStatus();
+            } catch (e) {
+                if (getVerboseDebug()) {
+                    console.log(e);
+                }
+
+                status = false;
+            }
+
+            if (status) {
+                if (getVerboseDebug()) {
+                    console.log("Connected");
+                }
+
                 if (cb) {
                     cb();
                 }
                 resolve();
             } else if (numRetries && count >= numRetries) {
+                if (getVerboseDebug()) {
+                    console.log("Failed. Exceeded number of retries.");
+                }
+
                 reject("Number of retries exceeded");
             } else {
                 count = count + 1;
-                console.log("Failed to connect. Retrying...");
+
+                if (getVerboseDebug()) {
+                    console.log("Failed to connect. Retrying...");
+                }
+
                 setTimeout(_checkServerStatus, POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD);
             }
         };
@@ -53,7 +90,14 @@ function blockAwaitServerOk(device, cb, numRetries) {
  * @returns date string
  */
 function createTimestamp() {
-    return + new Date();
+    const now = new Date();
+    const string = now.toISOString();
+
+    if (getVerboseDebug()) {
+        console.log(`Creating Timestamp: ${string}`);
+    }
+
+    return string;
 }
 
 /**
@@ -83,17 +127,51 @@ async function createTag(payloadStr, clientKey) {
         b => b.toString(16).padStart(2, '0')
     ).join('');
 
-    // console.log("Creating Tag:");
-    // console.log(payloadStr);
-    // console.log(clientKey);
-    // console.log(hashHex);
-
+    if (getVerboseDebug()) {
+        console.log(`Creating Tag: ${payloadStr}, ${clientKey} -> ${hashHex}`);
+    }
+ 
     return hashHex;
+}
+
+/**
+ * If device value gets out of sync with server, this handler will perform a single
+ * resync-retry on callback.
+ * @param {*} cb operation to run with value sync retry
+ * @param {*} retry flag for recursion
+ * @returns result from cb return
+ */
+const valueRetryHandler = async (device, cb, retry = true) => {
+    let res = null;
+
+    try {
+        res = await cb();
+    } catch (e) {
+        if (e.response && e.response.data == 'value invalid') {
+            const ack = await device.getValue();
+
+            if (getVerboseDebug()) {
+                console.log('getValue()', ack);
+            }
+
+            if (retry) {
+                res = valueRetryHandler(device, cb, false);
+            } else {
+                throw new Error('Number of retries exceeded');
+            }
+            
+        } else {
+            throw e;
+        }
+    }
+
+    return res;
 }
 
 module.exports = {
     formatVersion,
     blockAwaitServerOk,
     createTimestamp,
-    createTag
+    createTag,
+    valueRetryHandler
 };

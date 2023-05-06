@@ -403,160 +403,162 @@ Response = JSON
     "tag": "1f6c640f7d072b6c5dc26e55e320f78d7df1b012ae9b31f3c3e1da2da39c6d77",
 
     "schema": {
-        "schema": {
-            {
-                "$id": "/data/device",
-                "type": "object",
-                "properties": {
-                    "serial": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readonly": true
-                    },
-                    "type": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string",
-                        "readonly": false
-                    },
-                    "description": {
-                        "type": "string",
-                        "readonly": false
-                    },
-                    "hardware": {
-                        "type": "string",
-                        "readonly": true
-                    },
-                    "firmware": {
-                        "type": "string",
-                        "readonly": true
-                    },
-                    "manufacturer": {
-                        "type": "string"
-                    },
-                    "rollover": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "skipTagCheck": {
-                        "type": "boolean"
-                    },
-                    "state": {
-                        "type": "object",
-                        "properties": {
-                            "power": {
-                                "type": "boolean",
-                                "readonly": false
-                            },
-                            "readonlySpoof": {
-                                "type": "integer",
-                                "minimum": -1,
-                                "maximum": 345,
-                                "readonly": true
-                            }
+        "deviceSchema": {
+            "type": "object",
+            "properties": {
+                "serial": {
+                    "type": "string",
+                    "format": "uuid",
+                    "readonly": true
+                },
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "readonly": false
+                },
+                "description": {
+                    "type": "string",
+                    "readonly": false
+                },
+                "hardware": {
+                    "type": "string",
+                    "readonly": true
+                },
+                "firmware": {
+                    "type": "string",
+                    "readonly": true
+                },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "rollover": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
                         },
-                        "required": [
-                            "power",
-                            "readonlySpoof"
-                        ],
-                        "additionalProperties": false
-                    },
-                    "sensors": {
-                        "type": "object",
-                        "patternProperties": {
-                            ".*": {
-                                "type": "object",
-                                "properties": {
-                                    "sensorId": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                    },
-                                    "units": {
-                                        "type": "string"
-                                    },
-                                    "types": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "description": {
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "skipTagCheck": {
+                    "type": "boolean"
+                },
+                "state": {
+                    "type": "object",
+                    "patternProperties": {
+                        ".*": {}
+                    }
+                },
+                "sensors": {
+                    "type": "object",
+                    "patternProperties": {
+                        ".*": {
+                            "type": "object",
+                            "properties": {
+                                "sensorId": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "units": {
+                                    "type": "string"
+                                },
+                                "types": {
+                                    "type": "array",
+                                    "items": {
                                         "type": "string"
                                     }
                                 },
-                                "required": [
-                                    "types",
-                                    "units",
-                                    "sensorId",
-                                    "name",
-                                    "description"
-                                ],
-                                "additionalProperties": false
-                            }
-                        }
-                    },
-                    "manufacturerData": {
-                        "type": "object",
-                        "properties": {}
-                    },
-                    "rpc": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "uuid": {
-                                    "type": "string",
-                                    "format": "uuid",
-                                    "readonly": true
+                                "name": {
+                                    "type": "string"
                                 },
-                                "type": {
-                                    "type": "string",
-                                    "readonly": true
-                                },
-                                "parameters": {
-                                    "type": "array",
-                                    "items": {}
+                                "description": {
+                                    "type": "string"
                                 }
                             },
                             "required": [
-                                "uuid",
-                                "parameters"
+                                "types",
+                                "units",
+                                "sensorId",
+                                "name",
+                                "description"
                             ],
                             "additionalProperties": false
                         }
                     }
                 },
-                "required": [
-                    "serial",
-                    "type",
-                    "name",
-                    "description",
-                    "hardware",
-                    "firmware",
-                    "manufacturerId",
-                    "rollover",
-                    "skipTagCheck",
-                    "state",
-                    "sensors",
-                    "manufacturer",
-                    "rpc"
-                ],
-                "additionalProperties": false
-            }
+                "manufacturerData": {
+                    "type": "object",
+                    "properties": {}
+                },
+                "rpc": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "uuid": {
+                                "type": "string",
+                                "format": "uuid",
+                                "readonly": true
+                            },
+                            "type": {
+                                "type": "string",
+                                "readonly": true
+                            },
+                            "parameters": {
+                                "type": "array",
+                                "items": {}
+                            }
+                        },
+                        "required": [
+                            "uuid",
+                            "parameters"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "serial",
+                "type",
+                "name",
+                "description",
+                "hardware",
+                "firmware",
+                "manufacturerId",
+                "rollover",
+                "skipTagCheck",
+                "state",
+                "sensors",
+                "manufacturer",
+                "rpc"
+            ],
+            "additionalProperties": false
+        },
+        "stateSchema": {
+            "type": "object",
+            "properties": {
+                "power": {
+                    "type": "boolean",
+                    "readonly": false
+                },
+                "readonlySpoof": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "maximum": 345,
+                    "readonly": true
+                }
+            },
+            "required": [
+                "power",
+                "readonlySpoof"
+            ],
+            "additionalProperties": false
         },
         "rpcParametersByType": {
             "test": {
-                "$id": "/data/rpc-parameters?type=fake-0&rpc=test",
                 "type": "array",
                 "properties": {}
             }
