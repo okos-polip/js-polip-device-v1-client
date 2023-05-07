@@ -19,8 +19,7 @@ const dev = new PolipDevice(
     DEFAULT_REVOCABLE_KEY,
     HARDWARE_VERSION,
     FIRMWARE_VERSION,
-    ROLLOVER,
-    `http://localhost:3020`
+    ROLLOVER
 );
 
 const main = async () => {
