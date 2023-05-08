@@ -1,14 +1,3 @@
-export interface PolipDeviceConfig {
-    serial?: string;
-    key?: string;
-    hardware?: string;
-    firmware?: string;
-    rollover?: number;
-    url?: string;
-    value?: number;
-    skipTagCheck?: boolean;
-}
-
 export interface GetStateParams {
     state?: boolean;
     meta?: boolean;
@@ -17,13 +6,22 @@ export interface GetStateParams {
     manufacturer?: boolean;
 }
 
-export interface RpcObj {
+export interface RPCObject {
     uuid: string;
     result: string;
 }
 
 export class PolipDevice {
-    constructor(config?: PolipDeviceConfig);
+    constructor(
+        serial?: string,
+        key?: string,
+        hardware?: string,
+        firmware?: string,
+        rollover?: number,
+        url?: string,
+        value?: number,
+        skipTagCheck?: boolean
+    );
     checkServerStatus(): Promise<boolean>;
     getState(
         state?: boolean,
@@ -38,7 +36,7 @@ export class PolipDevice {
     pushError(message: string, errorCode: number): Promise<any>;
     pushSensors(sensorsObj: object): Promise<any>;
     getValue(): Promise<any>;
-    pushRPC(rpcObj: RpcObj): Promise<any>;
+    pushRPC(rpcObj: RPCObject): Promise<any>;
     getSchema(): Promise<any>;
     getErrorSemantic(code?: number): Promise<any>;
 }

@@ -1,7 +1,7 @@
 export function formatVersion(major: number, minor: number, patch: number): string;
 export function blockAwaitServerOk(
     device: any,
-    cb: () => void,
+    cb?: () => void,
     numRetries?: number
 ): Promise<void>;
 export function createTimestamp(): string;
