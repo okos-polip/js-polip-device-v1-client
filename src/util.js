@@ -1,9 +1,6 @@
 const { getVerboseDebug } = require('./verbose');
 const { POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD } = require('./const');
-
-if (typeof process !== 'undefined' && process.versions && process.versions.node) {
-    var crypto = require('crypto').webcrypto;
-}
+const CryptoJS = require('crypto-js');
 
 /**
  * Standard format for hardware and firmware version strings 
@@ -107,25 +104,8 @@ function createTimestamp() {
  * @returns HMAC as a hex-encoded string
  */
 async function createTag(payloadStr, clientKey) {
-    const enc = new TextEncoder("utf-8");
-    const algorithm = { name: "HMAC", hash: "SHA-256" };
-    const key = await crypto.subtle.importKey(
-        "raw",
-        enc.encode(clientKey),
-        algorithm,
-        false, ["sign", "verify"]
-    );
-
-    const hashBuffer = await crypto.subtle.sign(
-        algorithm.name, 
-        key, 
-        enc.encode(payloadStr)
-    );
-
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(
-        b => b.toString(16).padStart(2, '0')
-    ).join('');
+    const hashBuffer = CryptoJS.HmacSHA256(payloadStr, clientKey);
+    const hashHex = hashBuffer.toString(CryptoJS.enc.Hex);
 
     if (getVerboseDebug()) {
         console.log(`Creating Tag: ${payloadStr}, ${clientKey} -> ${hashHex}`);

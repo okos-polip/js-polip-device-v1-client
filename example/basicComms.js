@@ -8,8 +8,8 @@ const {
     setVerboseDebug
 } = require('../src');
 
-const DEFAULT_REVOCABLE_KEY = "revocable-key-0";
-const DEFAULT_DEVICE_SERIAL = "fake-0-0000";
+const DEFAULT_REVOCABLE_KEY = "revocable-key-1";
+const DEFAULT_DEVICE_SERIAL = "fake-0-0001";
 const FIRMWARE_VERSION = formatVersion(0,0,0);
 const HARDWARE_VERSION = formatVersion(0,0,0);
 const ROLLOVER = 2**32;
@@ -25,7 +25,7 @@ const dev = new PolipDevice(
 const main = async () => {
     let res;
 
-    setVerboseDebug(false);
+    setVerboseDebug(true);
 
     await blockAwaitServerOk(dev);
  
@@ -40,7 +40,8 @@ const main = async () => {
         return await dev.getSchema();
     });
 
-    console.log('Device Schema', res.schema.schema);
+    console.log('Device Schema', res.schema.deviceSchema);
+    console.log("State", res.schema.stateSchema);
     console.log('RPC Parameters', res.schema.rpcParametersByType);
     console.log('Sensors', res.schema.sensorsBySensorId);
 
