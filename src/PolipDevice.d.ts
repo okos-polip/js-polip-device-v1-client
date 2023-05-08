@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export interface GetStateParams {
     state?: boolean;
     meta?: boolean;
