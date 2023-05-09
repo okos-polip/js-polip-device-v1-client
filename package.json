@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/okos-polip/js-device-v1-client#readme",
   "dependencies": {
-    "axios": "^1.3.5",
     "crypto-js": "^4.1.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "browserify": "^17.0.0",
-    "terser": "^5.17.1"
+    "terser": "^5.17.1",
+    "axios": "^1.3.5"
   }
 }
