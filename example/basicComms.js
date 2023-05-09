@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const axios = require('axios');
+
 const { 
     PolipDevice, 
     formatVersion, 
@@ -15,6 +17,14 @@ const HARDWARE_VERSION = formatVersion(0,0,0);
 const ROLLOVER = 2**32;
 
 const dev = new PolipDevice(
+    {
+        get: async (url) => {
+            return axios.get(url);
+        },
+        post: async (url, payload) => {
+            return axios.post(url, payload);
+        }
+    },
     DEFAULT_DEVICE_SERIAL,
     DEFAULT_REVOCABLE_KEY,
     HARDWARE_VERSION,
@@ -25,7 +35,7 @@ const dev = new PolipDevice(
 const main = async () => {
     let res;
 
-    setVerboseDebug(true);
+    setVerboseDebug(false);
 
     await blockAwaitServerOk(dev);
  
@@ -33,17 +43,18 @@ const main = async () => {
         return await dev.getStateByParam({ state: true, rpc: true });
     });
 
-    console.log('State Returned', res.state);
-    console.log('RPC Returned', res.rpc)
+    console.log('\tState Returned', res.state);
+    console.log('\tRPC Returned', res.rpc)
 
     res = await valueRetryHandler(dev, async () => {
         return await dev.getSchema();
     });
 
-    console.log('Device Schema', res.schema.deviceSchema);
-    console.log("State", res.schema.stateSchema);
-    console.log('RPC Parameters', res.schema.rpcParametersByType);
-    console.log('Sensors', res.schema.sensorsBySensorId);
+    console.log('Schema Response');
+    console.log('\tDevice Schema', res.schema.deviceSchema);
+    console.log("\tState Schema", res.schema.stateSchema);
+    console.log('\tRPC Parameters by Type', res.schema.rpcParametersByType);
+    console.log('\tSensors by Sensor ID', res.schema.sensorsBySensorId);
 
     res = await valueRetryHandler(dev, async () => {
         return await dev.getErrorSemantic();

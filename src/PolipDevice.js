@@ -1,4 +1,3 @@
-const axios = require('axios');
 const { getVerboseDebug } = require('./verbose');
 const { createTimestamp, createTag } = require('./util');
 const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE } = require('./const');
@@ -10,15 +9,17 @@ const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE } = require('./const');
  */
 class PolipDevice {
     constructor(
-        serial = null, 
-        key = null,
-        hardware = null, 
-        firmware = null,
+        commObj,
+        serial, 
+        key,
+        hardware, 
+        firmware,
         rollover = null,
         url = POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
         value = 0, 
         skipTagCheck = false, 
     ) {
+        this._commObj = commObj;             // External comm object (wrapper for various HTTP clients)
         this.serial = serial;               // Serial identifier unique to this device
         this.key = key;                     // Revocable key used for tag gen
         this.hardware = hardware;           // Hardware version to report to server
@@ -29,13 +30,77 @@ class PolipDevice {
         this.skipTagCheck = skipTagCheck;   // Set true if key -> tag gen not needed
     }
 
+    get serial() {
+        return this._serial;
+    }
+
+    set serial(value) {
+        this._serial = value;
+    }
+
+    get key() {
+        return this._key;
+    }
+
+    set key(value) {
+        this._key = value;
+    }
+
+    get hardware() {
+        return this._hardware;
+    }
+
+    set hardware(value) {
+        this._hardware = value;
+    }
+
+    get firmware() {
+        return this._firmware;
+    }
+
+    set firmware(value) {
+        this._firmware = value;
+    }
+
+    get rollover() {
+        return this._rollover;
+    }
+
+    set rollover(value) {
+        this._rollover = value;
+    }
+
+    get url() {
+        return this._url;
+    }
+
+    set url(value) {
+        this._url = value;
+    }
+
+    get value() {
+        return this._value;
+    }
+
+    set value(value) {
+        this._value = value;
+    }
+
+    get skipTagCheck() {
+        return this._skipTagCheck;
+    }
+
+    set skipTagCheck(value) {
+        this._skipTagCheck = value;
+    }
+
     /**
      * GET request to status endpoint
      * @returns true if reaches end of function else throws error
      */
     async checkServerStatus() {
         try {
-            const response = await axios.get(this.url + "/api/v1/");
+            const response = await this._commObj.get(this.url + "/api/v1/");
             if (response.status !== 200) {
                 throw new Error('Server returned non-200 status code');
             }
@@ -121,7 +186,7 @@ class PolipDevice {
             throw new Error('Invalid parameterization: sensor object must be provided');
         }
 
-        const res = this._requestTemplate(
+        const res = await this._requestTemplate(
             this.url + "/api/v1/device/push",
             { state: stateObj }
         );
@@ -374,7 +439,7 @@ class PolipDevice {
             }
         }
 
-        const response = await axios.post(endpoint, reqObj);
+        const response = await this._commObj.post(endpoint, reqObj);
 
         if (response.status !== 200) {
             if (response.data === 'value invalid') {
