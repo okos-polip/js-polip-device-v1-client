@@ -139,8 +139,8 @@ export class PolipDevice {
     ): Promise<PolipResponsePoll>;
     getStateByParam(params: GetStateParams): Promise<PolipResponsePoll>;
     pushState(stateObj: object): Promise<PolipResponseAck>;
-    pushNotification(message: string): Promise<PolipResponseAck>;
-    pushError(message: string, errorCode: number): Promise<PolipResponseAck>;
+    pushNotification(message: string, userVisible?: boolean): Promise<PolipResponseAck>;
+    pushError(message: string, errorCode: number, userVisible?: boolean): Promise<PolipResponseAck>;
     pushSensors(sensorsObj: object): Promise<PolipResponseAck>;
     getValue(): Promise<PolipResponseAck>;
     pushRPC(rpcObj: RPCReturnObject): Promise<PolipResponseAck>;

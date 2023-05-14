@@ -201,9 +201,11 @@ class PolipDevice {
     /**
      * Wrapper around push error for notification messages (errorCode = 0)
      * @param {*} message string message to be provided with error - should be human readable
+     * @param {*} userVisible (optional default=true) boolean metadata that notification is renderable
+     * @returns fully formed response JSON data - acknowledgement
      */
-    async pushNotification(message) {
-        return this.pushError(message, 0);
+    async pushNotification(message, userVisible=true) {
+        return this.pushError(message, 0, userVisible);
     }
 
     /**
@@ -223,15 +225,21 @@ class PolipDevice {
      * 
      * @param {*} message string message to be provided with error - should be human readable
      * @param {*} errorCode integer code (as defined by the error semantic tables / descriptions)
+     * @param {*} userVisible (optional default=true) boolean metadata that notification is renderable
      * @returns fully formed response JSON data - acknowledgement
      */
-    async pushError(message, errorCode) {
+    async pushError(message, errorCode, userVisible=true) {
         message = String(message);
         errorCode = parseInt(errorCode);
+        userVisible = !!userVisible;
     
         const res = await this._requestTemplate(
             this.url + "/api/v1/device/error",
-            { code: errorCode, message: message }
+            { 
+                code: errorCode, 
+                message: message, 
+                userVisible: userVisible 
+            }
         );
 
         if (getVerboseDebug()) {
