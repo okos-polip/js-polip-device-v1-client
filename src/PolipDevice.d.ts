@@ -87,14 +87,14 @@ export interface ErrorRangeEntry {
     description: string;
 }
 
-interface SemanticRangesAndDescriptions {
+export interface SemanticRangesAndDescriptions {
     descriptions: {
         [key: string]: string;
     };
     ranges: ErrorRangeEntry[];
 }
 
-interface SemanticRangeAndDescription {
+export interface SemanticRangeAndDescription {
     description: string;
     range: ErrorRangeEntry;
 }
