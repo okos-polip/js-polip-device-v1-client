@@ -44,35 +44,26 @@ export interface RPCRequestObject {
     parameters: undefined | null | object;
 }
 
-export interface PolipResponsePoll {
-    serial: string;
-    timestamp: string;
-    hardware: string;
-    firmware: string;
-    value: number;
-    tag: string;
-    state: undefined | object;
-    type: undefined | string;
+export interface Metadata {
+	type: string | undefined;
     typeName: undefined | string;
-    skipTagCheck: undefined | boolean;
-    rollover: undefined | number | null;
-    manufacturer: undefined | string;
-    name: undefined | string;
-    description: undefined | string;
+	name: string | undefined;
+	description: string | undefined;
+	rollover: number | null | undefined;
+	skipTagCheck: boolean | undefined;
+	manufacturer: string | undefined;
+}
+
+export interface PolipResponsePoll extends PolipResponseAck, Metadata {
+    state: undefined | object;
     sensors: undefined | {
-        [string]: SensorMetaData
+        [key: string]: SensorMetaData
     };
     manufacturerData: undefined | null | object;
     pendingRpcs: undefined | RPCRequestObject[];
 }
 
-export interface PolipResponseSchema {
-    serial: string;
-    timestamp: string;
-    hardware: string;
-    firmware: string;
-    value: number;
-    tag: string;
+export interface PolipResponseSchema extends PolipResponseAck  {
     schema: {
         deviceSchema: object;
         stateSchema: object;
@@ -99,13 +90,7 @@ export interface SemanticRangeAndDescription {
     range: ErrorRangeEntry;
 }
 
-export interface PolipResponseSemantic {
-    serial: string;
-    timestamp: string;
-    hardware: string;
-    firmware: string;
-    value: number;
-    tag: string;
+export interface PolipResponseSemantic extends PolipResponseAck {
     semantic: SemanticRangesAndDescriptions | SemanticRangeAndDescription;
 }
 
