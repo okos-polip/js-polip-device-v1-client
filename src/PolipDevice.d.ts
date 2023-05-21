@@ -63,13 +63,15 @@ export interface PolipResponsePoll extends PolipResponseAck, Metadata {
     pendingRpcs: undefined | RPCRequestObject[];
 }
 
+export interface FullSchema {
+    deviceSchema: object;
+    stateSchema: object;
+    rpcParametersByType: object;
+    sensorsBySensorId: object;
+}
+
 export interface PolipResponseSchema extends PolipResponseAck  {
-    schema: {
-        deviceSchema: object;
-        stateSchema: object;
-        rpcParametersByType: object;
-        sensorsBySensorId: object;
-    }
+    schema: FullSchema
 }
 
 export interface ErrorRangeEntry {
