@@ -60,7 +60,7 @@ export interface PolipResponsePoll extends PolipResponseAck, Metadata {
         [key: string]: SensorMetaData
     };
     manufacturerData?: null | object;
-    pendingRpcs?: RPCRequestObject[];
+    rpc?: RPCRequestObject[];
 }
 
 export interface FullSchema {
