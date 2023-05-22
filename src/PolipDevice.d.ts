@@ -41,26 +41,26 @@ export interface SensorMetaData {
 export interface RPCRequestObject {
     uuid: string;
     type: string;
-    parameters: undefined | null | object;
+    parameters?: null | object;
 }
 
 export interface Metadata {
-	type: string | undefined;
-    typeName: undefined | string;
-	name: string | undefined;
-	description: string | undefined;
-	rollover: number | null | undefined;
-	skipTagCheck: boolean | undefined;
-	manufacturer: string | undefined;
+	type?: string;
+    typeName?: string;
+	name?: string;
+	description?: string;
+	rollover?: number | string | null;
+	skipTagCheck?: boolean;
+	manufacturer?: string;
 }
 
 export interface PolipResponsePoll extends PolipResponseAck, Metadata {
-    state: undefined | object;
-    sensors: undefined | {
+    state?: object;
+    sensors?: {
         [key: string]: SensorMetaData
     };
-    manufacturerData: undefined | null | object;
-    pendingRpcs: undefined | RPCRequestObject[];
+    manufacturerData?: null | object;
+    pendingRpcs?: RPCRequestObject[];
 }
 
 export interface FullSchema {
@@ -101,7 +101,7 @@ export interface PolipDeviceStateExport {
     key: string;
     hardware: string;
     firmware: string;
-    rollover: number | null;
+    rollover: number | string | null;
     url: string;
     value: number;
     skipTagCheck: boolean;
@@ -114,7 +114,7 @@ export class PolipDevice {
         key: string,
         hardware: string,
         firmware: string,
-        rollover?: number | null,
+        rollover?: number | string | null,
         url?: string,
         value?: number,
         skipTagCheck?: boolean
@@ -123,7 +123,7 @@ export class PolipDevice {
     key: string;
     hardware: string;
     firmware: string;
-    rollover: number | null;
+    rollover: number | string | null;
     url: string;
     value: number;
     skipTagCheck: boolean;
