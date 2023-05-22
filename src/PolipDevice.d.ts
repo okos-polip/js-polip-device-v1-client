@@ -96,6 +96,17 @@ export interface PolipResponseSemantic extends PolipResponseAck {
     semantic: SemanticRangesAndDescriptions | SemanticRangeAndDescription;
 }
 
+export interface PolipDeviceStateExport {
+    serial: string;
+    key: string;
+    hardware: string;
+    firmware: string;
+    rollover: number | null;
+    url: string;
+    value: number;
+    skipTagCheck: boolean;
+}
+
 export class PolipDevice {
     constructor(
         commObj: CommunicationObject,
@@ -133,6 +144,9 @@ export class PolipDevice {
     pushRPC(rpcObj: RPCReturnObject): Promise<PolipResponseAck>;
     getSchema(): Promise<PolipResponseSchema>;
     getErrorSemantic(code?: number): Promise<PolipResponseSemantic>;
+    static constructFromState(commObj: CommunicationObject, state: PolipDeviceStateExport): PolipDevice;
+    importFromState(state: PolipDeviceStateExport): void;
+    exportToState(): PolipDeviceStateExport;
 }
 
 export default PolipDevice;

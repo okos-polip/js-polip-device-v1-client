@@ -482,6 +482,44 @@ class PolipDevice {
 
         return response.data;
     }
+
+    static constructFromState(commObj, state) {
+        return new PolipDevice(
+            commObj,
+            state.serial,
+            state.key,
+            state.hardware,
+            state.firmware,
+            state.rollover,
+            state.url,
+            state.value,
+            state.skipTagCheck
+        );
+    }
+
+    importFromState(state) {
+        this.serial = state.serial;
+        this.key = state.key;
+        this.hardware = state.hardware;
+        this.firmware = state.firmware;
+        this.rollover = state.rollover;
+        this.url = state.url;
+        this.value = state.value;
+        this.skipTagCheck = state.skipTagCheck;
+    }
+
+    exportToState() {
+        return {
+            serial: this.serial,
+            key: this.key,
+            hardware: this.hardware,
+            firmware: this.firmware,
+            rollover: this.rollover,
+            url: this.url,
+            value: this.value,
+            skipTagCheck: this.skipTagCheck
+        };
+    }
 };
 
 
