@@ -108,6 +108,29 @@ const main = async () => {
     }); 
 
     console.log('Push State ACKed');
+
+    res = await valueRetryHandler(dev, async () => {
+        return await dev.getStateByParam({
+            state: true,
+            rpc: true,
+            manufacturer: true
+        });
+    });
+
+    console.log(res.state);
+    console.log(res.rpc);
+    console.log(res.manufacturerData);
+
+    res = await valueRetryHandler(dev, async () => {
+        return await dev.getMetaByParam({
+            general: true,
+            state: true,
+            sensors: true,
+            manufacturer: true
+        })
+    });
+
+    console.log(res);
 }
 
 main();
