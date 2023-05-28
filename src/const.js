@@ -25,6 +25,16 @@ const POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD = 500;
 // 32-bit rollover
 const POLIP_DEFAULT_ROLLOVER = Math.pow(2, 32);
 
+// Enum values for RPC status
+const PolipRPCStatusEnum = {
+    PENDING: "pending",
+    SUCCESS: "success",
+    FAILURE: "failure",
+    REJECTED: "rejected",
+    ACKNOWLEDGED: "acknowledged",
+    CANCELED: "canceled"
+};
+
 module.exports = {
     POLIP_DEVICE_INGEST_SERVER_ADDRESS,
     POLIP_DEVICE_INGEST_SERVER_HTTP_PORT,
@@ -34,5 +44,6 @@ module.exports = {
     POLIP_DEFAULT_POLL_STATE_PERIOD,
     POLIP_DEFAULT_PUSH_SENSE_PERIOD,
     POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD,
-    POLIP_DEFAULT_ROLLOVER
+    POLIP_DEFAULT_ROLLOVER,
+    PolipRPCStatusEnum
 };

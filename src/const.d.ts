@@ -7,3 +7,11 @@ export const POLIP_DEFAULT_POLL_STATE_PERIOD: number;
 export const POLIP_DEFAULT_PUSH_SENSE_PERIOD: number;
 export const POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD: number;
 export const POLIP_DEFAULT_ROLLOVER: number;
+export declare enum PolipRPCStatusEnum {
+    PENDING = "pending",
+    SUCCESS = "success",
+    FAILURE = "failure",
+    REJECTED = "rejected",
+    ACKNOWLEDGED = "acknowledged",
+    CANCELED = "canceled"
+}

@@ -1,5 +1,5 @@
 const { getVerboseDebug } = require('./verbose');
-const { createTimestamp, createTag } = require('./util');
+const { createTimestamp, createTag, valueRetryHandler } = require('./util');
 const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE } = require('./const');
 
 /**
@@ -17,9 +17,10 @@ class PolipDevice {
         rollover = null,
         url = POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
         value = 0, 
-        skipTagCheck = false, 
+        skipTagCheck = false,
+        retryOnValueError = true, 
     ) {
-        this._commObj = commObj;             // External comm object (wrapper for various HTTP clients)
+        this._commObj = commObj;            // External comm object (wrapper for various HTTP clients)
         this.serial = serial;               // Serial identifier unique to this device
         this.key = key;                     // Revocable key used for tag gen
         this.hardware = hardware;           // Hardware version to report to server
@@ -28,6 +29,7 @@ class PolipDevice {
         this.url = url;                     // Ingest URL (by default set to secure fixed api name)
         this.value = value;                 // Incremented value for next transmission id
         this.skipTagCheck = skipTagCheck;   // Set true if key -> tag gen not needed
+        this.retryOnValueError = retryOnValueError; // Set false if external retry mechanism used
     }
 
     get serial() {
@@ -94,6 +96,14 @@ class PolipDevice {
         this._skipTagCheck = value;
     }
 
+    get retryOnValueError() {
+        return this._retryOnValueError;
+    }
+
+    set retryOnValueError(value) {
+        this._retryOnValueError = value;
+    }
+
     /**
      * GET request to status endpoint
      * @returns true if reaches end of function else throws error
@@ -126,18 +136,14 @@ class PolipDevice {
      * Then recall this method.
      * 
      * @param {*} state boolean flag to retrieve device state data
-     * @param {*} meta boolean flag to retrieve device meta data
-     * @param {*} sensors boolean flag to retrieve sensor meta data
      * @param {*} rpc boolean flag to retrieve pending RPCs list
      * @param {*} manufacturer boolean flag to retrieve manufacturer defined data
      * @returns fully formed response JSON data with requested data from server
      */
-    async getState(state = true, meta = false, sensors = false, rpc = false, manufacturer = false) {
+    async getState(state = true, rpc = false, manufacturer = false) {
 
         const params = new URLSearchParams({
-            meta: !!meta,
             state: !!state,
-            sensors: !!sensors,
             rpc: !!rpc,
             manufacturer: !!manufacturer
         }).toString();
@@ -155,12 +161,93 @@ class PolipDevice {
     }
 
     /**
+     * POST meta request
+     * 
+     * Requests data from server according to the query param list provided
+     * 
+     * This call will perform request tag generation (if device configured) and
+     * response tag match (if device configured). Will throw errors if
+     *  - server fails to communicate (axios error)
+     *  - value invalid (polip protocol error)
+     *  - tag match fail (most likely key / tag check settings mismatch)
+     * 
+     * When a value error is encountered, need to call getValue() to refresh.
+     * Then recall this method.
+     * 
+     * @param {*} general boolean flag to retrieve general device metadata
+     * @param {*} state boolean flag to retrieve state device metadata
+     * @param {*} sensors boolean flag to retrieve sensor device metadata
+     * @param {*} manufacturer boolean flag to retrieve manufacturer defined data
+     * @returns fully formed response JSON data with requested data from server
+     */
+    async getMeta(general = true, state = true, sensors = true, manufacturer = true) {
+
+        const params = new URLSearchParams({
+            general: !!general,
+            state: !!state,
+            sensors: !!sensors,
+            manufacturer: !!manufacturer
+        }).toString();
+
+        const res = await this._requestTemplate(
+            this.url + '/api/v1/device/meta?' + params, 
+            {}
+        );
+
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
+        
+        return res;
+    }
+
+    /**
      * Wrapper on getState for passing in a single params object instead of listing parameters
-     * @param {state, meta, sensors, rpc, manufacturer} params key:value
+     * @param {state, meta, sensors, rpc, manufacturer} params key:value booleans
      * @returns result of device.getState()
      */
-    async getStateByParam({ state, meta, sensors, rpc, manufacturer }) {
-        return this.getState(state, meta, sensors, rpc, manufacturer);
+    async getStateByParam({ state, rpc, manufacturer }) {
+        return this.getState(state, rpc, manufacturer);
+    }
+
+    /**
+     * Wrapper on getMeta for passing in a single params object instead of listing parameters
+     * @param {general, state, sensors, manufacturer} params key:value booleans
+     * @returns result of device.getMeta()
+     */
+    async getMetaByParam({ general, state, sensors, manufacturer }) {
+        return this.getMetaByParam(general, state, sensors, manufacturer);
+    }
+
+    /**
+     * POST push (general) request
+     * 
+     * Pushes state, sense, and/or rpc data to server. Each should be compliant 
+     * with their specific type schema.
+     * 
+     * This call will perform request tag generation (if device configured) and
+     * response tag match (if device configured). Will throw errors if
+     *  - server fails to communicate (axios error)
+     *  - value invalid (polip protocol error)
+     *  - tag match fail (most likely key / tag check settings mismatch)
+     * 
+     * When a value error is encountered, need to call getValue() to refresh.
+     * Then recall this method.
+     * 
+     * @param {state, sense, rpc} params: objects with properly formated state representation 
+     * @returns fully formed response JSON data - acknowledgement
+     */
+    async push({ state, sense, rpc }) {
+        const res = await this._requestTemplate(
+            this.url + "/api/v1/device/state",
+            { state, sense, rpc }
+        );
+
+        if (getVerboseDebug()) {
+            console.log(res);
+        }
+
+        return res;
     }
 
     /**
@@ -187,7 +274,7 @@ class PolipDevice {
         }
 
         const res = await this._requestTemplate(
-            this.url + "/api/v1/device/push",
+            this.url + "/api/v1/device/state",
             { state: stateObj }
         );
 
@@ -448,17 +535,8 @@ class PolipDevice {
         }
 
         const response = await this._commObj.post(endpoint, reqObj);
-
         if (response.status !== 200) {
-            if (response.data === 'value invalid') {
-                if (getVerboseDebug()) {
-                    console.log(`Value invalid error detected - recommending to call device.getValue()`);
-                }
-
-                throw new Error('Value invalid');
-            } else {
-                throw new Error('Server error');
-            }
+            throw response;
         }
 
         if (!skipTag && !this.skipTagCheck) {
@@ -483,6 +561,15 @@ class PolipDevice {
         return response.data;
     }
 
+    /**
+     * Create a new polip object from an exported state type
+     * 
+     * Useful if Polip device is being serialized / converted to immutable state-management
+     * 
+     * @param {*} commObj linkage to desired HTTP comm object
+     * @param {*} state settings to be imported on new polip device
+     * @returns polip device instance
+     */
     static constructFromState(commObj, state) {
         return new PolipDevice(
             commObj,
@@ -493,10 +580,15 @@ class PolipDevice {
             state.rollover,
             state.url,
             state.value,
-            state.skipTagCheck
+            state.skipTagCheck,
+            state.retryOnValueError
         );
     }
 
+    /**
+     * Updates this device with a previously exported / generated state
+     * @param {*} state settings to be imported
+     */
     importFromState(state) {
         this.serial = state.serial;
         this.key = state.key;
@@ -506,8 +598,12 @@ class PolipDevice {
         this.url = state.url;
         this.value = state.value;
         this.skipTagCheck = state.skipTagCheck;
+        this.retryOnValueError = state.retryOnValueError;
     }
 
+    /**
+     * @returns Exports current device state to a simple JS object
+     */
     exportToState() {
         return {
             serial: this.serial,
@@ -517,7 +613,8 @@ class PolipDevice {
             rollover: this.rollover,
             url: this.url,
             value: this.value,
-            skipTagCheck: this.skipTagCheck
+            skipTagCheck: this.skipTagCheck,
+            retryOnValueError: this.retryOnValueError
         };
     }
 };

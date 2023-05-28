@@ -1,3 +1,5 @@
+import { PolipRPCStatusEnum } from "./const";
+
 export interface CommunicationObjectResponse {
     status: number;
     data: any;
@@ -10,15 +12,21 @@ export interface CommunicationObject {
 
 export interface GetStateParams {
     state?: boolean;
-    meta?: boolean;
-    sensors?: boolean;
     rpc?: boolean;
+    manufacturer?: boolean;
+}
+
+export interface GetMetaParams {
+    general?: boolean;
+    state?: boolean;
+    sensors?: boolean;
     manufacturer?: boolean;
 }
 
 export interface RPCReturnObject {
     uuid: string;
-    result: string;
+    result: any;
+    status: PolipRPCStatusEnum;
 }
 
 export interface PolipResponseAck {
@@ -31,17 +39,19 @@ export interface PolipResponseAck {
 }
 
 export interface SensorMetaData {
-    sensorId: string;
+    id: string;
     units: string;
-    types: string[];
+    tags: string[];
     name: string;
     description: string;
+    type: string;
 }
 
 export interface RPCRequestObject {
     uuid: string;
     type: string;
     parameters?: null | object;
+    status: PolipRPCStatusEnum
 }
 
 export interface Metadata {
@@ -52,13 +62,11 @@ export interface Metadata {
 	rollover?: number | string | null;
 	skipTagCheck?: boolean;
 	manufacturer?: string;
+    rpcQueueLength?: number;
 }
 
-export interface PolipResponsePoll extends PolipResponseAck, Metadata {
+export interface PolipResponsePoll extends PolipResponseAck {
     state?: object;
-    sensors?: {
-        [key: string]: SensorMetaData
-    };
     manufacturerData?: null | object;
     rpc?: RPCRequestObject[];
 }
@@ -105,6 +113,31 @@ export interface PolipDeviceStateExport {
     url: string;
     value: number;
     skipTagCheck: boolean;
+    retryOnValueError: boolean;
+}
+
+export interface PolipResponseMeta extends PolipResponseAck, Metadata {
+    state?: {
+        [key: string]: SensorMetaData
+    }
+    sensors?: {
+        [key: string]: SensorMetaData
+    };
+    manufacturerData?: null | object;
+}
+
+export interface StateObject {
+    [key: string]: any
+}
+
+export interface SenseObject {
+    [key: string]: any
+}
+
+export interface PushParams {
+    state?: StateObject;
+    sense?: SenseObject;
+    rpc?: RPCReturnObject
 }
 
 export class PolipDevice {
@@ -117,7 +150,8 @@ export class PolipDevice {
         rollover?: number | string | null,
         url?: string,
         value?: number,
-        skipTagCheck?: boolean
+        skipTagCheck?: boolean,
+        retryOnValueError?: boolean,
     );
     serial: string;
     key: string;
@@ -127,19 +161,26 @@ export class PolipDevice {
     url: string;
     value: number;
     skipTagCheck: boolean;
+    retryOnValueError: boolean;
     checkServerStatus(): Promise<boolean>;
     getState(
         state?: boolean,
         meta?: boolean,
-        sensors?: boolean,
-        rpc?: boolean,
-        manufacturer?: boolean
+        rpc?: boolean, 
     ): Promise<PolipResponsePoll>;
+    getMeta(
+        general?: boolean,
+        state?: boolean,
+        sensors?: boolean,
+        manufacturer?: boolean
+    ): Promise<PolipResponseMeta>;
     getStateByParam(params: GetStateParams): Promise<PolipResponsePoll>;
-    pushState(stateObj: object): Promise<PolipResponseAck>;
+    getMetaByParam(params: GetMetaParams): Promise<PolipResponseMeta>;
+    push(params: PushParams): Promise<PolipResponseAck>;
+    pushState(stateObj: StateObject): Promise<PolipResponseAck>;
     pushNotification(message: string, userVisible?: boolean): Promise<PolipResponseAck>;
     pushError(message: string, errorCode: number, userVisible?: boolean): Promise<PolipResponseAck>;
-    pushSensors(sensorsObj: object): Promise<PolipResponseAck>;
+    pushSensors(sensorsObj: SenseObject): Promise<PolipResponseAck>;
     getValue(): Promise<PolipResponseAck>;
     pushRPC(rpcObj: RPCReturnObject): Promise<PolipResponseAck>;
     getSchema(): Promise<PolipResponseSchema>;

@@ -19,9 +19,11 @@ const ROLLOVER = 2**32;
 const dev = new PolipDevice(
     {
         get: async (url) => {
+            console.log('GET:',url);
             return axios.get(url);
         },
         post: async (url, payload) => {
+            console.log('POST:',url);
             return axios.post(url, payload);
         }
     },
@@ -35,7 +37,7 @@ const dev = new PolipDevice(
 const main = async () => {
     let res;
 
-    setVerboseDebug(false);
+    setVerboseDebug(true);
 
     await blockAwaitServerOk(dev);
  
