@@ -130,7 +130,7 @@ class PolipDevice {
      * @param {*} manufacturer boolean flag to retrieve manufacturer defined data
      * @returns fully formed response JSON data with requested data from server
      */
-    async getState(state = true, rpc = false, manufacturer = false) {
+    async getState(state = false, rpc = false, manufacturer = false) {
 
         const params = new URLSearchParams({
             state: !!state,
@@ -170,7 +170,7 @@ class PolipDevice {
      * @param {*} manufacturer boolean flag to retrieve manufacturer defined data
      * @returns fully formed response JSON data with requested data from server
      */
-    async getMeta(general = true, state = true, sensors = true, manufacturer = true) {
+    async getMeta(general = false, state = false, sensors = false, manufacturer = false) {
 
         const params = new URLSearchParams({
             general: !!general,
@@ -206,7 +206,7 @@ class PolipDevice {
      * @returns result of device.getMeta()
      */
     async getMetaByParam({ general, state, sensors, manufacturer }) {
-        return this.getMetaByParam(general, state, sensors, manufacturer);
+        return this.getMeta(general, state, sensors, manufacturer);
     }
 
     /**
