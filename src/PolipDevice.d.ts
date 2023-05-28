@@ -75,8 +75,8 @@ export interface PolipResponsePoll extends PolipResponseAck {
 export interface FullSchema {
     deviceSchema: object;
     stateSchema: object;
-    rpcParametersByType: object;
-    sensorsBySensorId: object;
+    rpcParameterSchemas: object;
+    sensorSchema: object;
 }
 
 export interface PolipResponseSchema extends PolipResponseAck  {

@@ -7,8 +7,11 @@ const {
     formatVersion, 
     blockAwaitServerOk, 
     valueRetryHandler,
-    setVerboseDebug
+    setVerboseDebug,
+    POLIP_DEVICE_INGEST_SERVER_URL_SECURE
 } = require('../src');
+
+const useLocal = process.argv.includes('useLocal');
 
 const DEFAULT_REVOCABLE_KEY = "revocable-key-1";
 const DEFAULT_DEVICE_SERIAL = "fake-0-0001";
@@ -31,7 +34,10 @@ const dev = new PolipDevice(
     DEFAULT_REVOCABLE_KEY,
     HARDWARE_VERSION,
     FIRMWARE_VERSION,
-    ROLLOVER
+    ROLLOVER,
+    (useLocal) ? "http://localhost:3020" : POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
+    0,
+    false
 );
 
 const main = async () => {
@@ -55,8 +61,8 @@ const main = async () => {
     console.log('Schema Response');
     console.log('\tDevice Schema', res.schema.deviceSchema);
     console.log("\tState Schema", res.schema.stateSchema);
-    console.log('\tRPC Parameters by Type', res.schema.rpcParametersByType);
-    console.log('\tSensors by Sensor ID', res.schema.sensorsBySensorId);
+    console.log('\tRPC Parameters by Type', res.schema.rpcParameterSchemas);
+    console.log('\tSensors by Sensor ID', res.schema.sensorSchema);
 
     res = await valueRetryHandler(dev, async () => {
         return await dev.getErrorSemantic();
