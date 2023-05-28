@@ -17,8 +17,7 @@ class PolipDevice {
         rollover = null,
         url = POLIP_DEVICE_INGEST_SERVER_URL_SECURE,
         value = 0, 
-        skipTagCheck = false,
-        retryOnValueError = true, 
+        skipTagCheck = false
     ) {
         this._commObj = commObj;            // External comm object (wrapper for various HTTP clients)
         this.serial = serial;               // Serial identifier unique to this device
@@ -29,7 +28,6 @@ class PolipDevice {
         this.url = url;                     // Ingest URL (by default set to secure fixed api name)
         this.value = value;                 // Incremented value for next transmission id
         this.skipTagCheck = skipTagCheck;   // Set true if key -> tag gen not needed
-        this.retryOnValueError = retryOnValueError; // Set false if external retry mechanism used
     }
 
     get serial() {
@@ -94,14 +92,6 @@ class PolipDevice {
 
     set skipTagCheck(value) {
         this._skipTagCheck = value;
-    }
-
-    get retryOnValueError() {
-        return this._retryOnValueError;
-    }
-
-    set retryOnValueError(value) {
-        this._retryOnValueError = value;
     }
 
     /**
@@ -580,8 +570,7 @@ class PolipDevice {
             state.rollover,
             state.url,
             state.value,
-            state.skipTagCheck,
-            state.retryOnValueError
+            state.skipTagCheck
         );
     }
 
@@ -598,7 +587,6 @@ class PolipDevice {
         this.url = state.url;
         this.value = state.value;
         this.skipTagCheck = state.skipTagCheck;
-        this.retryOnValueError = state.retryOnValueError;
     }
 
     /**
@@ -613,8 +601,7 @@ class PolipDevice {
             rollover: this.rollover,
             url: this.url,
             value: this.value,
-            skipTagCheck: this.skipTagCheck,
-            retryOnValueError: this.retryOnValueError
+            skipTagCheck: this.skipTagCheck
         };
     }
 };

@@ -63,6 +63,7 @@ export interface Metadata {
 	skipTagCheck?: boolean;
 	manufacturer?: string;
     rpcQueueLength?: number;
+    schemaVersion?: string;
 }
 
 export interface PolipResponsePoll extends PolipResponseAck {
@@ -113,7 +114,6 @@ export interface PolipDeviceStateExport {
     url: string;
     value: number;
     skipTagCheck: boolean;
-    retryOnValueError: boolean;
 }
 
 export interface PolipResponseMeta extends PolipResponseAck, Metadata {
@@ -150,8 +150,7 @@ export class PolipDevice {
         rollover?: number | string | null,
         url?: string,
         value?: number,
-        skipTagCheck?: boolean,
-        retryOnValueError?: boolean,
+        skipTagCheck?: boolean
     );
     serial: string;
     key: string;
@@ -161,7 +160,6 @@ export class PolipDevice {
     url: string;
     value: number;
     skipTagCheck: boolean;
-    retryOnValueError: boolean;
     checkServerStatus(): Promise<boolean>;
     getState(
         state?: boolean,
