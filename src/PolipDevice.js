@@ -208,9 +208,7 @@ class PolipDevice {
      * @returns result of device.getMeta()
      */
     async getMetaByParam(params) {
-        console.log(params);
         const { general, state, sensors, manufacturer } = params;
-        console.log('IN getMetaByParam', general, state, sensors, manufacturer);
         return this.getMeta(general, state, sensors, manufacturer);
     }
 
