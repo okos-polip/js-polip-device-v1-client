@@ -171,6 +171,7 @@ class PolipDevice {
      * @returns fully formed response JSON data with requested data from server
      */
     async getMeta(general = false, state = false, sensors = false, manufacturer = false) {
+        console.log('IN getMeta()', general, state, sensors, manufacturer);
 
         const params = new URLSearchParams({
             general: !!general,
@@ -206,6 +207,7 @@ class PolipDevice {
      * @returns result of device.getMeta()
      */
     async getMetaByParam({ general, state, sensors, manufacturer }) {
+        console.log('IN getMetaByParam', general, state, sensors, manufacturer);
         return this.getMeta(general, state, sensors, manufacturer);
     }
 
