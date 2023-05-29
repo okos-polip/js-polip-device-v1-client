@@ -14,4 +14,7 @@ export declare enum PolipRPCStatusEnum {
     REJECTED = "rejected",
     ACKNOWLEDGED = "acknowledged",
     CANCELED = "canceled"
-}
+};
+export declare namespace PolipRPCStatusEnum {
+    function checkEnumMatch(variable: string): boolean;
+};

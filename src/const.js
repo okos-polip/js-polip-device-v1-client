@@ -26,14 +26,22 @@ const POLIP_AWAIT_SERVER_OK_RECHECK_PERIOD = 500;
 const POLIP_DEFAULT_ROLLOVER = Math.pow(2, 32);
 
 // Enum values for RPC status
-const PolipRPCStatusEnum = {
+const PolipRPCStatusEnum = Object.freeze({
     PENDING: "pending",
     SUCCESS: "success",
     FAILURE: "failure",
     REJECTED: "rejected",
     ACKNOWLEDGED: "acknowledged",
-    CANCELED: "canceled"
-};
+    CANCELED: "canceled",
+    checkEnumMatch: function(variable) {
+        for (const enumValue of Object.values(this)) {
+            if (variable === enumValue) {
+                return true;
+            }
+        }
+        return false;
+    }
+});
 
 module.exports = {
     POLIP_DEVICE_INGEST_SERVER_ADDRESS,

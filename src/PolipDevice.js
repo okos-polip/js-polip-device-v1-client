@@ -1,6 +1,6 @@
 const { getVerboseDebug } = require('./verbose');
-const { createTimestamp, createTag, valueRetryHandler } = require('./util');
-const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE } = require('./const');
+const { createTimestamp, createTag, } = require('./util');
+const { POLIP_DEVICE_INGEST_SERVER_URL_SECURE, PolipRPCStatusEnum } = require('./const');
 
 /**
  * Defines all necessary meta-data to establish communication with server
@@ -414,8 +414,10 @@ class PolipDevice {
     async pushRPC(rpcObj) {
         if (rpcObj.uuid === undefined || rpcObj.uuid === null) {
             throw new Error('Invalid parameterization: RPC must have uuid');
-        } else if (rpcObj.result === undefined ||rpcObj.result === null) {
-            throw new Error('Invalid parameterization: RPC must have result');
+        } else if (rpcObj.result === undefined) {
+            throw new Error('Invalid parameterization: RPC must have result, null is ok');
+        } else if (!PolipRPCStatusEnum.checkEnumMatch(rpcObj.status)) {
+            throw new Error('Invalid parameterization: RPC must have status matching one of enumerated strings');
         }
 
         const res = await this._requestTemplate( 
