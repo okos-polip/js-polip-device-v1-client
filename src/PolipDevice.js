@@ -197,7 +197,8 @@ class PolipDevice {
      * @param {state, meta, sensors, rpc, manufacturer} params key:value booleans
      * @returns result of device.getState()
      */
-    async getStateByParam({ state, rpc, manufacturer }) {
+    async getStateByParam(params) {
+        const { state, rpc, manufacturer } = params;
         return this.getState(state, rpc, manufacturer);
     }
 
@@ -206,7 +207,9 @@ class PolipDevice {
      * @param {general, state, sensors, manufacturer} params key:value booleans
      * @returns result of device.getMeta()
      */
-    async getMetaByParam({ general, state, sensors, manufacturer }) {
+    async getMetaByParam(params) {
+        console.log(params);
+        const { general, state, sensors, manufacturer } = params;
         console.log('IN getMetaByParam', general, state, sensors, manufacturer);
         return this.getMeta(general, state, sensors, manufacturer);
     }
