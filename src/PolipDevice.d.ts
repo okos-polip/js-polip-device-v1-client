@@ -1,4 +1,5 @@
 import { PolipRPCStatusEnum } from "./const";
+import { CoreSemantic } from "./semantic";
 
 export interface CommunicationObjectResponse {
     status: number;
@@ -38,13 +39,13 @@ export interface PolipResponseAck {
     tag: string;
 }
 
-export interface SensorMetaData {
+export interface DataEntryMetadata {
     id: string;
     units: string;
     tags: string[];
     name: string;
     description: string;
-    type: string;
+    type: CoreSemantic;
 }
 
 export interface RPCRequestObject {
@@ -118,10 +119,10 @@ export interface PolipDeviceStateExport {
 
 export interface PolipResponseMeta extends PolipResponseAck, Metadata {
     state?: {
-        [key: string]: SensorMetaData
+        [key: string]: DataEntryMetadata
     }
     sensors?: {
-        [key: string]: SensorMetaData
+        [key: string]: DataEntryMetadata
     };
     manufacturerData?: null | object;
 }
