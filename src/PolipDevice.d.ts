@@ -39,13 +39,8 @@ export interface PolipResponseAck {
     tag: string;
 }
 
-export interface DataEntryMetadata {
+export interface DataEntryMetadata extends CoreSemantic {
     id: string;
-    units: string;
-    tags: string[];
-    name: string;
-    description: string;
-    type: CoreSemantic;
 }
 
 export interface RPCRequestObject {

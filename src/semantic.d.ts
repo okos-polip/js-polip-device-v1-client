@@ -1,8 +1,10 @@
 export interface CoreSemantic {
+    units: string;              // Front-end units to display
+    tags: string[];             // Optional array of tags to associate with data type
+    name: string;               // Front-end name of type
+    description: string;        // Front-end description of type
     semantic: string;           // Semantic name for lookup / type casting
     readonly?: boolean;         // Component value cannot be changed by user / generator (overrides randomGenerator setting)
-    label?: string;             // Frontend user-facing description
-    annotation?: string;        // Frontend user-facing description
     defaultValue?: any;         // Generic value to insert into component on first render
     nullAllowed?: boolean;      // Type can be sometimes be null (and should be rendered with that in mind)
     randomGenerator?: boolean;  // Generator should produce psuedorandom based on type-specific attributes vs. use the "fixedGeneratorValue"
@@ -14,7 +16,7 @@ export interface OkosSemanticPowerButton extends CoreSemantic {
     isToggle?: boolean;     // Render component as toggle instead of single button
 }
 
-export type OkosPowerButton = boolean | string // Defining for compile token
+export type OkosSemanticPowerButtonState = boolean | string // Defining for compile token
 
 export interface OkosSemanticTextEntry extends CoreSemantic {
     isNumber: boolean; //Indicates whether field is raw string or a numeric entry type
@@ -25,7 +27,7 @@ export interface OkosSemanticTextEntry extends CoreSemantic {
     pattern?: string;   //If not isNumber, then optional string format enforcer
 }
 
-export type OkosTextEntry = number | string // Defining for compile token
+export type OkosSemanticTextEntryState = number | string // Defining for compile token
 
 export interface OkosSemanticRangeEntry extends CoreSemantic {
     isInteger?: boolean; //Indicates whether field is a floating point or integer numeric type
@@ -34,7 +36,7 @@ export interface OkosSemanticRangeEntry extends CoreSemantic {
     step?: number;      //If isNumber, then optional incremeter step
 }
 
-export type OkosRange = number // Defining for compile token
+export type OkosSemanticRangeState = number | string // Defining for compile token
 
 export interface OkosSemanticBoolean extends CoreSemantic {
     isEnum?: boolean;    // Selects report between boolean or string/number enum
@@ -47,53 +49,61 @@ export interface OkosSemanticBoolean extends CoreSemantic {
                             // Error if both isToggle and isDropdown
 }
 
-export type OkosBoolean = boolean | string | number // Defining for compile token
+export type OkosSemanticBooleanState = boolean | string | number // Defining for compile token
 
-export type OkosEnumSet = Array<string | number> // Type constrained list of options for options
+export type OkosSemanticEnumSet = Array<string | number> // Type constrained list of options for options
 
 export interface OkosSemanticEnumSelect extends CoreSemantic {
     // Best for selecting one from list (should render as dropdown [default] or radio buttons)
-    enumList: OkosEnumSet;
+    enumList: OkosSemanticEnumSet;
     isRadioButton?: boolean;
 }
 
+export type OkosSemanticEnumSelectState = number | string | boolean
+
 export interface OkosSemanticEnumSelectMulti extends CoreSemantic {
     // Best for selecting multiple from list (should render as checkboxes)
-    enumList: OkosEnumSet;
+    enumList: OkosSemanticEnumSet;
 }
+
+export type OkosSemanticEnumSelectMultiState = Array<OkosSemanticEnumSelectState>
 
 export type OkosSemanticColor = CoreSemantic // Represents color, no additional render properties
 
-export interface OkosColor {
+export interface OkosSemanticColorState {
     // Represents color with core rgb and optional alpha channel and white channel
-    r: number;
-    g: number;
-    b: number;
-    a?: number;
-    w?: number;
+    r: number;  // Red
+    g: number;  // Green
+    b: number;  // Blue
+    a?: number; // Optional alpha
+    w?: number; // Optional white
 }
 
 export type OkosSemanticDate = CoreSemantic // Represents date string, no additional render properties
 
+export type OkosSemanticDateState = string   // Represents a formated date-time, date, or time string
+
 export type OkosSemanticTime = CoreSemantic // Represents time string, no additional render properties
+
+export type OkosSemanticTimeState = string   // Represents a formated date-time, date, or time string
 
 export type OkosSemanticDateTime = CoreSemantic // Represents date-time string, no additional render properties
 
-export type OkosTime = string   // Represents a formated date-time, date, or time string
+export type OkosSemanticDateTimeState = string   // Represents a formated date-time, date, or time string
 
-export interface OkosSemanticDuration extends CoreSemantic {
-    // Represents some duration after a given date / time
-    units?: string;  // default assumed is hours
+export type OkosSemanticDuration = CoreSemantic // Represents some duration after a given date / time
+
+export interface OkosSemanticDurationDateBounded {      // Form-a for duration, two timestamps
+    startTimestamp: string; // String date-time timestamp
+    endTimestamp: string;   // String date-time timestamp
 }
 
-export interface OkosDuration {
-    // Represents some duration after a given date / time
-    // Either provided as two timestamps or as timestamp and duration
-    timestamp?: string;
-    duration?: number;
-    startTimestamp?: string;
-    endTimestamp?: string;
+export interface OkosSemanticDurationNumericBounded {   // Form-b for duration timestamp plus some numeric fractional hours
+    timestamp: string;      // String date-time timestamp
+    duration: number;       // Numeric representing hours
 }
+
+export type OkosSemanticDurationState = OkosSemanticDurationDateBounded | OkosSemanticDurationNumericBounded
 
 export interface CustomSemantic extends CoreSemantic {
     // User defined, stubbed for descriptor
