@@ -56,7 +56,7 @@ export type OkosSemanticEnumSet = Array<string | number> // Type constrained lis
 export interface OkosSemanticEnumSelect extends CoreSemantic {
     // Best for selecting one from list (should render as dropdown [default] or radio buttons)
     enumList: OkosSemanticEnumSet;
-    isRadioButton?: boolean;
+    isDropdown?: boolean;
 }
 
 export type OkosSemanticEnumSelectState = number | string | boolean
