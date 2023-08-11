@@ -1,14 +1,15 @@
 export interface CoreSemantic {
-    units: string;              // Front-end units to display
-    tags: string[];             // Optional array of tags to associate with data type
-    name: string;               // Front-end name of type
-    description: string;        // Front-end description of type
-    semantic: string;           // Semantic name for lookup / type casting
-    readonly?: boolean;         // Component value cannot be changed by user / generator (overrides randomGenerator setting)
-    defaultValue?: any;         // Generic value to insert into component on first render
-    nullAllowed?: boolean;      // Type can be sometimes be null (and should be rendered with that in mind)
-    randomGenerator?: boolean;  // Generator should produce psuedorandom based on type-specific attributes vs. use the "fixedGeneratorValue"
-    fixedGeneratorValue?: any;  // If randomGenerator is false, just report this value as generator result
+    units: string;                  // Front-end units to display
+    tags: string[];                 // Optional array of tags to associate with data type
+    name: string;                   // Front-end name of type
+    description: string;            // Front-end description of type
+    semantic: string;               // Semantic name for lookup / type casting
+    readonly?: boolean;             // Component value cannot be changed by user / generator (overrides randomGenerator setting)
+    defaultValue?: any;             // Generic value to insert into component on first render
+    nullAllowed?: boolean;          // Type can be sometimes be null (and should be rendered with that in mind)
+    randomGenerator?: boolean;      // Generator should produce psuedorandom based on type-specific attributes vs. use the "fixedGeneratorValue"
+    fixedGeneratorValue?: any;      // If randomGenerator is false, just report this value as generator result
+    renderDescription?: boolean;    // Display description in component render
 }
 
 export interface OkosSemanticPowerButton extends CoreSemantic {
