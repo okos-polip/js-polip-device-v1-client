@@ -9,7 +9,7 @@ export interface CoreSemantic {
     nullAllowed?: boolean;          // Type can be sometimes be null (and should be rendered with that in mind)
     randomGenerator?: boolean;      // Generator should produce psuedorandom based on type-specific attributes vs. use the "fixedGeneratorValue"
     fixedGeneratorValue?: any;      // If randomGenerator is false, just report this value as generator result
-    renderName?: boolean;           // Display name in component render
+    renderName?: boolean;           // Display name in component render 
     renderDescription?: boolean;    // Display description in component render
 }
 
