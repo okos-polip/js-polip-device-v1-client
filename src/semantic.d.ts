@@ -71,8 +71,9 @@ export interface OkosSemanticEnumSelectMulti extends CoreSemantic {
 export type OkosSemanticEnumSelectMultiState = Array<OkosSemanticEnumSelectState>
 
 export interface OkosSemanticColor extends CoreSemantic {
-    // Represents color, no additional render properties
-    range: number;
+    // Represents color
+    range: number;          // Range of values from 0 to this value
+    isInteger: boolean;     // Whether this range of values is integer or float
 }
 
 export interface OkosSemanticColorState {
