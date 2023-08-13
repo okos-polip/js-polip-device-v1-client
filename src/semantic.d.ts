@@ -70,7 +70,10 @@ export interface OkosSemanticEnumSelectMulti extends CoreSemantic {
 
 export type OkosSemanticEnumSelectMultiState = Array<OkosSemanticEnumSelectState>
 
-export type OkosSemanticColor = CoreSemantic // Represents color, no additional render properties
+export interface OkosSemanticColor extends CoreSemantic {
+    // Represents color, no additional render properties
+    range: number;
+}
 
 export interface OkosSemanticColorState {
     // Represents color with core rgb and optional alpha channel and white channel
