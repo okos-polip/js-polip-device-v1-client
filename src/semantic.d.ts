@@ -36,6 +36,7 @@ export interface OkosSemanticRangeEntry extends CoreSemantic {
     min?: number;       //If isNumber, then optional min value
     max?: number;       //If isNumber, then optional max value
     step?: number;      //If isNumber, then optional incremeter step
+    renderBounds?: boolean; // Display min / max as text
 }
 
 export type OkosSemanticRangeState = number | string // Defining for compile token
