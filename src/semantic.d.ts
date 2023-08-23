@@ -39,7 +39,7 @@ export interface OkosSemanticRangeEntry extends CoreSemantic {
     renderBounds?: boolean; // Display min / max as text
 }
 
-export type OkosSemanticRangeState = number | string // Defining for compile token
+export type OkosSemanticRangeState = number // Defining for compile token
 
 export interface OkosSemanticBoolean extends CoreSemantic {
     isEnum?: boolean;    // Selects report between boolean or string/number enum
@@ -57,12 +57,12 @@ export type OkosSemanticBooleanState = boolean | string | number // Defining for
 export type OkosSemanticEnumSet = Array<string | number> // Type constrained list of options for options
 
 export interface OkosSemanticEnumSelect extends CoreSemantic {
-    // Best for selecting one from list (should render as dropdown [default] or radio buttons)
+    // Best for selecting one from list (should render as dropdown or radio buttons)
     enumList: OkosSemanticEnumSet;
     isDropdown?: boolean;
 }
 
-export type OkosSemanticEnumSelectState = number | string | boolean
+export type OkosSemanticEnumSelectState = number | string
 
 export interface OkosSemanticEnumSelectMulti extends CoreSemantic {
     // Best for selecting multiple from list (should render as checkboxes)
