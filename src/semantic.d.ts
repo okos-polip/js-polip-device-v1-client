@@ -101,7 +101,10 @@ export type OkosSemanticDateTime = CoreSemantic // Represents date-time string, 
 
 export type OkosSemanticDateTimeState = string   // Represents a formated date-time, date, or time string
 
-export type OkosSemanticDuration = CoreSemantic // Represents some duration after a given date / time
+export interface OkosSemanticDuration extends CoreSemantic { // Represents some duration after a given date / time
+    formAOnly?: boolean; // Only use Form A durations (exclusive with formBOnly)
+    formBOnly?: boolean; // Only use Form B durations (exclusive with formAOnly)
+}
 
 export interface OkosSemanticDurationDateBounded {      // Form-a for duration, two timestamps
     startTimestamp: string; // String date-time timestamp
