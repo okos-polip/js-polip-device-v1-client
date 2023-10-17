@@ -100,7 +100,7 @@ class PolipDevice {
      */
     async checkServerStatus() {
         try {
-            const response = await this._commObj.get(this.url + "/api/v1/");
+            const response = await this._commObj.get(this.url + "/api/device/v1/health/check");
             if (response.status !== 200) {
                 throw new Error('Server returned non-200 status code');
             }
@@ -139,7 +139,7 @@ class PolipDevice {
         }).toString();
 
         const res = await this._requestTemplate(
-            this.url + '/api/v1/device/poll?' + params, 
+            this.url + '/api/device/v1/poll?' + params, 
             {}
         );
 
@@ -179,7 +179,7 @@ class PolipDevice {
         }).toString();
 
         const res = await this._requestTemplate(
-            this.url + '/api/v1/device/meta?' + params, 
+            this.url + '/api/device/v1/meta?' + params, 
             {}
         );
 
@@ -230,7 +230,7 @@ class PolipDevice {
      */
     async push({ state, sense, rpc }) {
         const res = await this._requestTemplate(
-            this.url + "/api/v1/device/state",
+            this.url + "/api/device/v1/state",
             { state, sense, rpc }
         );
 
@@ -265,7 +265,7 @@ class PolipDevice {
         }
 
         const res = await this._requestTemplate(
-            this.url + "/api/v1/device/state",
+            this.url + "/api/device/v1/state",
             { state: stateObj }
         );
 
@@ -312,7 +312,7 @@ class PolipDevice {
         userVisible = !!userVisible;
     
         const res = await this._requestTemplate(
-            this.url + "/api/v1/device/error",
+            this.url + "/api/device/v1/error",
             { 
                 code: errorCode, 
                 message: message, 
@@ -351,7 +351,7 @@ class PolipDevice {
         }
     
         const res = await this._requestTemplate(
-            this.url + "/api/v1/device/sense",
+            this.url + "/api/device/v1/sense",
             { sense: sensorsObj }
         );
 
@@ -376,7 +376,7 @@ class PolipDevice {
      */
     async getValue() {
         const res = await this._requestTemplate(
-            this.url + "/api/v1/device/value",
+            this.url + "/api/device/v1/value",
             {}, 
             true, // skip value in request pack 
             true  // skip tag in request pack, response check
@@ -419,7 +419,7 @@ class PolipDevice {
         }
 
         const res = await this._requestTemplate( 
-            this.url + "/api/v1/device/rpc",
+            this.url + "/api/device/v1/rpc",
             { rpc: rpcObj }
         );
 
@@ -447,7 +447,7 @@ class PolipDevice {
      */
     async getSchema() {
         const res = await this._requestTemplate(
-            this.url + '/api/v1/device/schema', 
+            this.url + '/api/device/v1/schema', 
             {}
         );
 
@@ -481,7 +481,7 @@ class PolipDevice {
         let params = (code !== undefined) ? `?code=${code}` : '';
 
         const res = await this._requestTemplate(
-            this.url + '/api/v1/device/error/semantic' + params, 
+            this.url + '/api/device/v1/error/semantic' + params, 
             {}
         );
 
