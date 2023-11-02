@@ -28,6 +28,7 @@ export interface RPCReturnObject {
     uuid: string;
     result: any;
     status: PolipRPCStatusEnum;
+    timestamp: string;
 }
 
 export interface PolipResponseAck {
@@ -47,7 +48,8 @@ export interface RPCRequestObject {
     uuid: string;
     type: string;
     parameters?: null | object;
-    status: PolipRPCStatusEnum
+    status: PolipRPCStatusEnum;
+    timestamp: string;
 }
 
 export interface Metadata {
@@ -60,6 +62,7 @@ export interface Metadata {
 	manufacturer?: string;
     rpcQueueLength?: number;
     schemaVersion?: string;
+    createdOn?: string;
 }
 
 export interface PolipResponsePoll extends PolipResponseAck {

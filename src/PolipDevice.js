@@ -418,6 +418,10 @@ class PolipDevice {
             throw new Error('Invalid parameterization: RPC must have status matching one of enumerated strings');
         }
 
+        if (rpcObj.timestamp === undefined) {
+            rpcObj.timestamp = createTimestamp();
+        }
+
         const res = await this._requestTemplate( 
             this.url + "/api/device/v1/rpc",
             { rpc: rpcObj }
